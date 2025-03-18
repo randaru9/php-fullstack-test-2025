@@ -6,6 +6,7 @@ use App\Http\Services\Service;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ClientService extends Service
 {
@@ -51,4 +52,32 @@ class ClientService extends Service
 
         return $client;
 	}
+
+    public function getBySlug(string $slug): Client|null
+	{
+        return Client::where('slug', $slug)->first();
+	}
+
+    public function update(Client $client, $name, $slug, $is_project, $self_capture, $client_prefix, $client_logo, $address, $phone_number, $city): void
+    {
+        $client->update([
+            'name' => $name,
+            'slug' => $slug,
+            'is_project' => $is_project,
+            'self_capture' => $self_capture,
+            'client_prefix' => $client_prefix,
+            'address' => $address,
+            'phone_number' => $phone_number,
+            'city' => $city
+        ]);
+
+        if ($client_logo) {
+            Storage::disk('s3')->delete($client->client_logo);
+
+            $logoPath = $client->uploadLogo($client_logo);
+            $client->client_logo = $logoPath;
+            $client->save();
+        }
+
+    }
 }
