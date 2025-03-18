@@ -24,14 +24,14 @@ class CreateController extends BaseController
             'city' => $city
         ] = $request;
         
-        $category = $this->clientService->create($name, $slug, $is_project, $self_capture, $client_prefix, $client_logo, $address, $phone_number, $city);
+        $client = $this->clientService->create($name, $slug, $is_project, $self_capture, $client_prefix, $client_logo, $address, $phone_number, $city);
 
         $response = new Response(Response::CREATED, 'Buat Client Berhasil');
 
-        if (!$category instanceof \Exception) {
-            $response->set(data: $category->toArray());
+        if (!$client instanceof \Exception) {
+            $response->set(data: $client->toArray());
         } else {
-            $response->set(Response::INTERNAL_SERVER_ERROR, 'Buat Client Gagal', $category);
+            $response->set(Response::INTERNAL_SERVER_ERROR, 'Buat Client Gagal', $client);
         }
 
         return $response->get();
