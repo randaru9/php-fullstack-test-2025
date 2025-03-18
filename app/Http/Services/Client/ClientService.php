@@ -6,6 +6,7 @@ use App\Http\Services\Service;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 
 class ClientService extends Service
@@ -80,4 +81,10 @@ class ClientService extends Service
         }
 
     }
+
+    public function delete(Client $client, string $slug): bool|null
+	{
+        Redis::del($slug); 
+        return $client->delete();
+	}
 }
