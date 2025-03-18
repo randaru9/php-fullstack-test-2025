@@ -4,6 +4,7 @@ namespace App\Http\Services\Client;
 
 use App\Http\Services\Service;
 use App\Models\Client;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ClientService extends Service
@@ -43,4 +44,11 @@ class ClientService extends Service
 
         }
     }
+
+    public function getAll(): Collection
+	{
+        $client = Client::latest()->get();
+
+        return $client;
+	}
 }
